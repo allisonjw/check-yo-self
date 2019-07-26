@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+  <head>
+    <title>Check-Yo-Self</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content=" width=device-width, initial-scale=1">
+    <link rel="reset" type="text/css" href="reset.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,700,800&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <header class="page__header">
+      <h1>CHECK <span class="header__yo">YO'</span> SELF</h1>
+      <form>
+        <button class="header__search--button" alt="maginfied glass to represent searching">
+          <img src="images/search.svg">
+        </button>
+        <input type="text" placeholder="Search" class="header__search--input"/>
+      </form>
+    </header>
+    <main class="main__content">
+    <aside>
+    <section class="aside__section--top">
+        <label for="title">Task Title</label>
+        <input type="text" id="aside__input--title" aria-required="true"/> 
+      <!-- <section class="aside__task--list"> -->
+        <ul id="section__ul--task"></ul>
+          <li class="aside__add--item">#</li>
+          <img src="images/delete.svg" class="delete-list-item">
+      <!-- </section> -->
+        <label for="item">Task Item</label>
+      <form class="task__form">
+        <input type="text" id="aside__input--item" aria-required="true"/>
+        <button class="aside__add-item--btn" alt="plus symbol to add a task" disabled>
+        <img src="images/plus.svg">
+        </button>
+      </form>
+      <form class="aside__button--form">
+        <button type="submit" class="btns" id="aside__make-task--btn" disabled>Make Task List</button>
+        <button type="submit" class="btns" id="aside__clear--btn" disabled>Clear All</button>
+      </form>
+    </section>
+        <button type="submit" class="btns" id="filter__urg--btn">Filter by Urgency</button>
+    </aside>
+    <section class="main__card--field">
+      <p class="make__list--message">I'm sure you have things to do. Start making a list on the left.</p>
+    </section>
+  </main> 
+    <script src="todo-list.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
