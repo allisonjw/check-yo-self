@@ -22,27 +22,23 @@
     <section class="aside__section--top">
         <label for="title">Task Title</label>
         <input type="text" id="aside__input--title" aria-required="true"/> 
-      <!-- <section class="aside__task--list"> -->
         <ul id="section__ul--task"></ul>
-          <li class="aside__add--item">#</li>
-          <img src="images/delete.svg" class="delete-list-item">
-      <!-- </section> -->
         <label for="item">Task Item</label>
       <form class="task__form">
         <input type="text" id="aside__input--item" aria-required="true"/>
-        <button class="aside__add-item--btn" alt="plus symbol to add a task" disabled>
-        <img src="images/plus.svg">
+        <button type="button" class="aside__add-item--btn" alt="plus symbol to add a task" disabled>
+        <img class="img__plus" src="images/plus.svg">
         </button>
       </form>
       <form class="aside__button--form">
-        <button type="submit" class="btns" id="aside__make-task--btn" disabled>Make Task List</button>
-        <button type="submit" class="btns" id="aside__clear--btn" disabled>Clear All</button>
+        <button type="button" class="btns" id="aside__make-task--btn"disabled>Make Task List</button>
+        <button type="button" class="btns" id="aside__clear--btn" disabled>Clear All</button>
       </form>
     </section>
         <button type="submit" class="btns" id="filter__urg--btn">Filter by Urgency</button>
     </aside>
     <section class="main__card--field">
-      <p class="make__list--message">I'm sure you have things to do. Start making a list on the left.</p>
+      <p class="make__list--message">I'm sure you have task to do, so make a list on the left.</p>
     </section>
   </main> 
     <script src="todo-list.js"></script>
