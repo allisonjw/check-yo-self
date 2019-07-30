@@ -83,7 +83,9 @@ function createTask() {
   var id = Date.now();
   var ul = document.querySelector('#section__ul--task');
   var possibleItem = `<li class="aside__add--item" data-id=${id}> 
-  <img src="images/delete.svg" class="aside__delete-list-item"><p class="article__output--p" contenteditable="true">${taskItemInput.value}</li>`
+  <img src="images/delete.svg" class="aside__delete-list-item">
+  <p class="article__output--p" contenteditable="true">${taskItemInput.value}</p>
+  </li>`
   ul.insertAdjacentHTML('beforeend', possibleItem);
   taskItemInput.value = "";
   makeCardBtn.disabled = false;
@@ -97,7 +99,6 @@ function makeToDoList(e, taskItems) {
   displayCard(toDo);
   clearFormInputs(e);
 }
-
 
 function makeTasksArray(e) {
 var taskItems = [];
@@ -151,8 +152,8 @@ function generateTaskInCard(toDo) {
   var addListArray = [];
   var listItems = '';
   for (var i = 0; i < toDo.tasks.length; i++) {
-    var checkbox = toDo.tasks[i].checked ? 'checkbox-active.svg' : 'checkbox.svg';
-    var checkboxText = toDo.tasks[i].checked ? 'checkbox-text-active' : 'checkbox-text-inactive';
+    var checkbox = toDo.tasks[i].complete ? 'checkbox-active.svg' : 'checkbox.svg';
+    var checkboxText = toDo.tasks[i].complete ? 'checkbox-text-active' : 'checkbox-text-inactive';
     addListArray.push(`
     <li class="aside__add--item" data-id=${[i]}> 
       <img class=".article__image--checkbox" src="images/${checkbox} ">
@@ -186,7 +187,6 @@ function generateTaskInCard(toDo) {
 
 function handleCard(e) {
   deleteToDoLists(e);
-  // toggleCheckbox(e);
   toggleUrgent(e);
   updateCompletedButton(e);
 }
@@ -195,18 +195,19 @@ function getTaskId(e) {
   return e.target.closest('li').getAttribute('data-id');
 }
 
-function findTaskIndex(id) {
-  return taskitems.findIndex(function(array) {
-  return array.id == parseInt(id);
+// inerpeter cant read 'taskId' == what else can i target?
+function findTaskIndex(id, obj) {
+  return obj.tasks.findIndex(function(arrayObj) {
+  return arrayObj.id == parseInt(id);
   });
 }
 
-function getToDoId(e) {
+function getToDoId(e) {   //give date.now 
  return e.target.closest('.task__card').getAttribute('data-id');
   
 }
 
-function findToDoIndex(id) {
+function findToDoIndex(id) {  //which index in the global array
   return toDoListArray.findIndex(function(array) {
   return array.id == parseInt(id);
 });
@@ -218,18 +219,16 @@ function updateCompletedButton(e) {
     var toDoIndex = findToDoIndex(toDoId);
     var toDoObject = toDoListArray[toDoIndex];
     var taskId = getTaskId(e);
-    var taskIndex = findTaskIndex(taskId, toDoObject);
+    var taskIndex = findTaskIndex(taskId, toDoObject); 
     toDoListArray[toDoIndex].updateTask(toDoListArray, taskIndex);
-    var check = toDoListArray[taskIndex].tasks.checked ? 'images/checkbox-active.svg' : 'images/checkbox.svg';
+    var check = toDoObject.taskItems[taskIndex].urgent ? 'images/checkbox-active.svg' : 'images/checkbox.svg';
     e.target.setAttribute('src', check);
-    toggleCompletedStyle(e);
+    toggleCheckboxStyle(e);
   }
-};
-
-// closest('li').querySelector('.article__output--p');
+};  
 
 function toggleCheckboxStyle(e) {
-  var checkboxText = e.target.nextElementSibling;       
+  var checkboxText = e.target.closest('li').querySelector('.article__output--p');       
   checkboxText.classList.toggle('checkbox-text-active');
   checkboxText.classList.toggle('checkbox-text-inactive');
 }
@@ -239,19 +238,19 @@ function toggleUrgent(e) {
   var toDoId = getToDoId(e);
   var toDoIndex = findToDoIndex(toDoId);
   toDoListArray[toDoIndex].updateToDo(toDoListArray, toDoIndex);
-  var urgentPath = toDoListArray[toDoIndex].urgent ? 'images/urgent-active.svg' : 'images/urgent.svg';
-  e.target.setAttribute('src', urgentPath);
+  var urgent = toDoListArray[toDoIndex].urgent ? 'images/urgent-active.svg' : 'images/urgent.svg';
+  e.target.setAttribute('src', urgent);
   toggleUrgentStyle(e, toDoIndex);
   }
 }
 
-function toggleUrgentStyle(e, toDoIndex) {
+function toggleUrgentStyle(e) {
   var urgentText = e.target.closest('article').querySelector('.footer__p--urgent');
   var urgentCard = e.target.closest('article');
-  var urgentSection = e.target.closest('article').querySelector('.section--container');
+  var urgentSection = e.target.closest('article').querySelector('.output__lists--tasks');
   urgentText.classList.toggle('active');
   urgentCard.classList.toggle('background-active');
-  urgentSection.classList.toggle('border-active');
+  urgentSection.classList.toggle('border-active'); 
 }
 
 function deleteToDoLists(e) {

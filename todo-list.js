@@ -15,14 +15,16 @@ class ToDoList {
         this.saveToStorage(toDoListArray);   
     }
   
-    updateToDo(toDoListArray, index) {
-      this.urgency = !this.urgency;
-      this.saveToStorage(toDoListArray);
+    updateToDo(toDoListArray, toDoIndex) {
+      this.urgent = !this.urgent;
+      this.saveToStorage(toDoListArray, toDoIndex);
       return this.urgent;
     }
   
     updateTask(toDoListArray, index) {
-      this.tasks[index].checked = !this.tasks[index].checked;
-      this.saveToStorage(toDoListArray);
+        console.log(index)
+        console.log(taskItems)
+      this.tasks[index]= !this.tasks[index];
+      this.saveToStorage(toDoListArray, index);
     }
   }
