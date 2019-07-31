@@ -50,22 +50,15 @@ function handleFormBtns(e) {
   makeCardBtn.disabled = !taskTitleInput.value || !newTaskItems.length; 
   clearAllBtn.disabled = !taskTitleInput.value && !taskItemInput.value && !newTaskItems.length; 
   taskItemInput.value === '' ? addTaskItemBtn.disabled = true: addTaskItemBtn.disabled = false;
-  // addTaskItemBtn.disabled = !taskItemInput.value;
 }
 
 function clearFormInputs(e) {
   e.preventDefault();
   taskTitleInput.value = "";
   taskItemInput.value = "";
-  newTaskItems.innerHTML = "";
+  newTaskItemArea.innerHTML = "";
   handleFormBtns(e);
 }
-
-function checkTaskLength() {
-  if (taskItems.length > 0) {
-    makeCardBtn.disabled = false;
-  }
-};
 
 function makeTasksObject(e) {
   e.preventDefault(e);
@@ -76,7 +69,6 @@ function makeTasksObject(e) {
   };
   createTask(newTask);
   taskItems.push(newTask);
-  checkTaskLength()
   return newTask;
 };
 
