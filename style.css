@@ -319,6 +319,7 @@ footer p {
   .main__card--field {
     background-color: #F3F6F7;
     columns: 1;
+    height: 100vh;
     padding: 30px;
     width: auto;
   }

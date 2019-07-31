@@ -14,6 +14,7 @@ var asideTaskForm = document.querySelector('.aside__section--top');
 var main = document.querySelector('.main__card--field');
 var taskMessage = document.querySelector('.make__list--message');
 var deleteImg = document.querySelector('delete__id');
+var newTaskItems = document.querySelectorAll('.aside__add--item');
 
 
 addTaskItemBtn.addEventListener('click', makeTasksObject);
@@ -25,6 +26,13 @@ clearAllBtn.addEventListener('click', clearFormInputs);
 main.addEventListener('click', handleCard);
 window.addEventListener('load', reinstantiateCards(toDoListArray));
 
+function reinstantiateCards(oldToDos) {
+  var newArray = oldToDos.map(function(object) {
+    return makeToDoList(object)
+  });
+   toDoListArray = newArray;
+}
+
 function makeTaskMessage() {
   if (toDoListArray.length === 0) {
     taskMessage.classList.remove('hidden');
@@ -33,7 +41,6 @@ function makeTaskMessage() {
 
 function handleFormBtns(e) {
   e.preventDefault();
-  var newTaskItems = document.querySelectorAll('.aside__add--item');
   makeCardBtn.disabled = !taskTitleInput.value || !newTaskItems.length; 
   clearAllBtn.disabled = !taskTitleInput.value && !taskItemInput.value && !newTaskItems.length; 
   taskItemInput.value === '' ? addTaskItemBtn.disabled = true: addTaskItemBtn.disabled = false;
@@ -44,8 +51,7 @@ function clearFormInputs(e) {
   e.preventDefault();
   taskTitleInput.value = "";
   taskItemInput.value = "";
-  newTaskItemArea.innerHTML = "";
-  taskItems = [];
+  newTaskItems.innerHTML = "";
   makeCardBtn.disabled = true;
   clearAllBtn.disabled = true;
   addTaskItemBtn.disabled = true;
@@ -66,8 +72,8 @@ function makeTasksObject(e) {
 function makeToDoList(obj) {
   var toDoId = obj.id;
   var toDoTitle = obj.title;
-  var toDoTasks = obj.tasks;
   var toDoUrgent = obj.urgent;
+  var toDoTasks = obj.tasks;
   var newToDo = new ToDoList({
     id: toDoId,
     title: toDoTitle,
@@ -95,7 +101,7 @@ function saveMakeList(e) {
 function removeCreateTask(e) {
   if (e.target.classList.contains('aside__delete-list-item')) {
     var taskId = getTaskId(e);
-    var taskIndex = getTaskId(taskId);
+    var taskIndex = getTaskId(e);
     e.target.closest('.aside__add--item').remove();
     taskItems.splice(taskIndex, 1);
   }
@@ -105,14 +111,14 @@ function getTaskId(e) {
   return e.target.closest('.aside__add--item').getAttribute('data-id');
 }
 
-function findTaskIndex(id) {
-  return taskItems.findIndex(function(arrayObj) {
+function findTaskIndex(id, obj) {  //not getting index/getting -1 which means test is failing
+  return obj.tasks.findIndex(function(arrayObj) {
   return arrayObj.id == parseInt(id);
   });
 }
 
 function createTask(task) {
-  var taskId = task.id;
+  var TaskId = Date.now();
   var ul = document.querySelector('#section__ul--task');
   var possibleItem = `<li class="aside__add--item" data-id=${task.id}> 
   <img src="images/delete.svg" class="aside__delete-list-item">
@@ -123,12 +129,6 @@ function createTask(task) {
   makeCardBtn.disabled = false;
 } 
 
-function reinstantiateCards(oldToDos) {
-  var newArray = oldToDos.map(function(object) {
-    return makeToDoList(object)
-  });
-   toDoListArray = newArray;
-}
 
 function displayCard(toDo) {
   taskMessage.classList.add('hidden');
@@ -163,7 +163,7 @@ function displayCard(toDo) {
 function generateTaskInCard(toDo) {
   var listItems = '';
   for (var i = 0; i < toDo.tasks.length; i++) {
-    var checkbox = toDo.tasks[i].completed === true ? 'checkbox-active.svg' : 'checkbox.svg';
+    var checkbox = toDo.tasks[i].completed ? 'checkbox-active.svg' : 'checkbox.svg';
     var checkboxText = toDo.tasks[i].completed ? 'checkbox-text-active' : 'checkbox-text-inactive';
     listItems += `
     <li class="aside__add--item" data-id="${toDo.tasks[i].id}"> 
@@ -186,9 +186,9 @@ function getToDoId(e) {
   
 }
 
-function findToDoIndex(id) {  
-  return toDoListArray.findIndex(function(arrayObj) {
-  return arrayObj.id == parseInt(id);
+function findToDoIndex(id) { //date.now of card
+  return toDoListArray.findIndex(function(arrayObj) { //not returning a value with debugger
+  return arrayObj.id == parseInt(id); //date.now of card
 });
 }
 
@@ -200,7 +200,7 @@ function updateCompletedButton(e) {
     var taskId = getTaskId(e);
     var taskIndex = findTaskIndex(taskId, toDoObject);
     toDoListArray[toDoIndex].updateTask(toDoListArray, taskIndex);
-    var check = toDoObject.tasks[taskIndex] ? 'images/checkbox-active.svg' : 'images/checkbox.svg';
+    var check = toDoObject.tasks[taskIndex].completed ? 'images/checkbox-active.svg' : 'images/checkbox.svg';
     e.target.setAttribute('src', check);
   toggleCheckboxStyle(e);
   }
@@ -238,9 +238,24 @@ function deleteCard(e) {
     var toDoIndex = findToDoIndex(toDoId);
     e.target.closest('article').remove();
     toDoListArray[toDoIndex].deleteFromStorage(toDoIndex);
+    enableDeleteBtn(e, toDoIndex)
   }
   makeTaskMessage();
 }
+
+function enableDeleteBtn(e, index) {
+  var objectToDelete = toDoListArray[index].tasks;
+  var newArray = objectToDelete.filter(function(arrayObj) {
+     return arrayObj.completed === true;
+  });
+  if (newArray.length === objectToDelete.length) {
+    e.target.closest('article').remove();
+    toDoListArray[toDoindex].deleteFromStorage(toDoIndex);
+  }
+  else {
+    return;
+  }
+};
 
 
 

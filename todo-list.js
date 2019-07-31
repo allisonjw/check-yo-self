@@ -7,7 +7,8 @@ class ToDoList {
     }
   
     saveToStorage(toDoListArray) {
-      localStorage.setItem('taskLists',JSON.stringify(toDoListArray));
+      var saveToDos = JSON.stringify(toDoListArray)
+      localStorage.setItem('taskLists', saveToDos);
     }
   
     deleteFromStorage(index) {
@@ -20,8 +21,9 @@ class ToDoList {
       this.saveToStorage(toDoListArray, toDoIndex);
     }
   
-    updateTask(toDoListArray, index) {
-      this.tasks[index] = !this.tasks[index];
+    updateTask(toDoListArray, taskindex) {
+      console.log("this", this.tasks[taskindex])
+      this.tasks[taskindex].completed = !this.tasks[taskindex].completed;
       this.saveToStorage(toDoListArray);
     }
   }
