@@ -1,4 +1,6 @@
 var toDoListArray = [];
+var taskItems = [];
+
 var searchButton = document.querySelector('.header__search--button');
 var searchInput = document.querySelector('.header__search--input');
 var taskTitleInput = document.querySelector('#aside__input--title');
@@ -16,6 +18,7 @@ var deleteImg = document.querySelector('delete__id');
 reinstantiateCards();
 reDisplayCards();
 // mapLocalStorage();
+
 
 addTaskItemBtn.addEventListener('click', createTask);
 asideTaskForm.addEventListener('click', removeCreateTask);
@@ -101,12 +104,11 @@ function makeToDoList(e, taskItems) {
 }
 
 function makeTasksArray(e) {
-var taskItems = [];
-var newTasks = document.querySelectorAll('.aside__add--item');
-var tasksArray = Array.from(newTasks);
-for (var i = 0; i < tasksArray.length; i++) {
+  var newTasks = document.querySelectorAll('.aside__add--item');
+  var tasksArray = Array.from(newTasks);
+  for (var i = 0; i < tasksArray.length; i++) {
   var newTask = tasksArray[i].innerText;
-  taskItems.push({complete: false, task: `${newTask}`});
+  taskItems.push({complete: false, task: `${newTask}`, id: Date.now()});
 }
 makeToDoList(e, taskItems);
 };
@@ -114,8 +116,18 @@ makeToDoList(e, taskItems);
 function removeCreateTask(e) {
   if(e.target.classList.contains('aside__delete-list-item')) {
      e.target.closest("li").remove();
+     deleteTaskItem(e)
   }
 } 
+
+// function deleteTaskItem(e) {
+//   if (e.target.closest('.aside__delete-list-item')) {
+//     var taskId = getTaskLId(e)
+//     var taskIndex = findTaskIndex(taskId)
+//     taskItems.splice(taskIndex, 1)
+//     event.target.closest('li').remove();
+//   }
+// };
 
 function displayCard(toDo) {
   taskMessage.classList.add('hidden');
@@ -152,11 +164,11 @@ function generateTaskInCard(toDo) {
   var addListArray = [];
   var listItems = '';
   for (var i = 0; i < toDo.tasks.length; i++) {
-    var checkbox = toDo.tasks[i].complete ? 'checkbox-active.svg' : 'checkbox.svg';
+    var checkbox = toDo.tasks[i].complete === true ? 'checkbox-active.svg' : 'checkbox.svg';
     var checkboxText = toDo.tasks[i].complete ? 'checkbox-text-active' : 'checkbox-text-inactive';
     addListArray.push(`
     <li class="aside__add--item" data-id=${[i]}> 
-      <img class=".article__image--checkbox" src="images/${checkbox} ">
+      <img class=".article__image--checkbox" src="images/${checkbox} "${toDo.tasks[i].complete}>
       <p class="article__output--p ${checkboxText}" contenteditable="true">${toDo.tasks[i].task}</p>
     </li>`);
   }
@@ -166,6 +178,7 @@ function generateTaskInCard(toDo) {
   return listItems;
 };
 
+
 // ********PHASE TWO*********
 // CHECKING TASK
 // 1.After a user has completed a task on their checklist, they should be able to check it off
@@ -173,20 +186,14 @@ function generateTaskInCard(toDo) {
 //  1.c updateTask method should save changes to storage
 //  1.d DOM update should happen in main.js
   
-
-// DELETE TASK
-// 2. the user should be able to remove it once they have completed their checklist.
-//  2.a disable delete button until all task are complete
-//  2.b target the article and closed delete button to delete
-//  2.c deleteFromStorage method should be used
-
 // MAKE URGENT
 // 3. clicks on the Urgent button, the button should stay in the active state.
 //   3.a urgent cards should persist
 //   3.b updateToDo method should be used
 
 function handleCard(e) {
-  deleteToDoLists(e);
+  deleteCard(e);
+  // checkAllCheckboxes(e);
   toggleUrgent(e);
   updateCompletedButton(e);
 }
@@ -196,8 +203,8 @@ function getTaskId(e) {
 }
 
 // inerpeter cant read 'taskId' == what else can i target?
-function findTaskIndex(id, obj) {
-  return obj.tasks.findIndex(function(arrayObj) {
+function findTaskIndex(id) {
+  return taskItems.findIndex(function(arrayObj) {
   return arrayObj.id == parseInt(id);
   });
 }
@@ -219,9 +226,10 @@ function updateCompletedButton(e) {
     var toDoIndex = findToDoIndex(toDoId);
     var toDoObject = toDoListArray[toDoIndex];
     var taskId = getTaskId(e);
-    var taskIndex = findTaskIndex(taskId, toDoObject); 
+    console.log(taskId)
+    var taskIndex = findTaskIndex(taskId, toDoObject);
     toDoListArray[toDoIndex].updateTask(toDoListArray, taskIndex);
-    var check = toDoObject.taskItems[taskIndex].urgent ? 'images/checkbox-active.svg' : 'images/checkbox.svg';
+    var check = toDoObject.tasks[taskIndex] ? 'images/checkbox-active.svg' : 'images/checkbox.svg';
     e.target.setAttribute('src', check);
     toggleCheckboxStyle(e);
   }
@@ -253,15 +261,28 @@ function toggleUrgentStyle(e) {
   urgentSection.classList.toggle('border-active'); 
 }
 
-function deleteToDoLists(e) {
+function deleteCard(e) {
   if (e.target.classList.contains('delete-id')) {
-    e.target.closest('article').remove();
+    // e.target.closest('article').remove();
     var toDoId = getToDoId(e);
     var toDoIndex = findToDoIndex(toDoId);
+// insert the function to remove the checkbox.svg if clicked
+    e.target.closest('article').remove();
     toDoListArray[toDoIndex].deleteFromStorage(toDoIndex);
   }
   makeTaskMessage();
 }
+
+// function checkAllCheckboxes(e,) {
+//   var taskIndex = findTaskIndex(taskId, toDoObject);
+//   var checkedOff = toDoListArray[taskIndex].tasks.every(function(task) {
+//     return task.complete === true;
+//   }) 
+
+//   if (checkedOff === true) {
+//     deleteCard(e, taskIndex);
+//   }
+// };
 
 
 

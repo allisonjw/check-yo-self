@@ -21,10 +21,8 @@ class ToDoList {
       return this.urgent;
     }
   
-    updateTask(toDoListArray, index) {
-        console.log(index)
-        console.log(taskItems)
-      this.tasks[index]= !this.tasks[index];
-      this.saveToStorage(toDoListArray, index);
+    updateTask(toDoListArray, taskId) {
+      this.tasks[taskId] = !this.tasks[taskId];
+      this.saveToStorage(toDoListArray, taskId);
     }
   }
