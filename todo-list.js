@@ -22,7 +22,6 @@ class ToDoList {
     }
   
     updateTask(toDoListArray, taskindex) {
-      console.log("this", this.tasks[taskindex])
       this.tasks[taskindex].completed = !this.tasks[taskindex].completed;
       this.saveToStorage(toDoListArray);
     }

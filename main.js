@@ -39,12 +39,18 @@ function makeTaskMessage() {
 }
 }
 
+function handleCard(e) {
+  deleteCard(e);
+  toggleUrgent(e);
+  updateCompletedButton(e);
+}
+
 function handleFormBtns(e) {
   e.preventDefault();
   makeCardBtn.disabled = !taskTitleInput.value || !newTaskItems.length; 
   clearAllBtn.disabled = !taskTitleInput.value && !taskItemInput.value && !newTaskItems.length; 
   taskItemInput.value === '' ? addTaskItemBtn.disabled = true: addTaskItemBtn.disabled = false;
-  addTaskItemBtn.disabled = !taskItemInput.value;
+  // addTaskItemBtn.disabled = !taskItemInput.value;
 }
 
 function clearFormInputs(e) {
@@ -52,10 +58,14 @@ function clearFormInputs(e) {
   taskTitleInput.value = "";
   taskItemInput.value = "";
   newTaskItems.innerHTML = "";
-  makeCardBtn.disabled = true;
-  clearAllBtn.disabled = true;
-  addTaskItemBtn.disabled = true;
+  handleFormBtns(e);
 }
+
+function checkTaskLength() {
+  if (taskItems.length > 0) {
+    makeCardBtn.disabled = false;
+  }
+};
 
 function makeTasksObject(e) {
   e.preventDefault(e);
@@ -66,6 +76,7 @@ function makeTasksObject(e) {
   };
   createTask(newTask);
   taskItems.push(newTask);
+  checkTaskLength()
   return newTask;
 };
 
@@ -96,6 +107,8 @@ function saveMakeList(e) {
   toDoListArray.push(newToDo);
   newToDo.saveToStorage(toDoListArray);
   clearFormInputs(e);
+  makeCardBtn.disabled = true;
+  newTaskItems.innerHTML = ""
 }
 
 function removeCreateTask(e) {
@@ -111,7 +124,7 @@ function getTaskId(e) {
   return e.target.closest('.aside__add--item').getAttribute('data-id');
 }
 
-function findTaskIndex(id, obj) {  //not getting index/getting -1 which means test is failing
+function findTaskIndex(id, obj) {  
   return obj.tasks.findIndex(function(arrayObj) {
   return arrayObj.id == parseInt(id);
   });
@@ -128,7 +141,6 @@ function createTask(task) {
   taskItemInput.value = "";
   makeCardBtn.disabled = false;
 } 
-
 
 function displayCard(toDo) {
   taskMessage.classList.add('hidden');
@@ -174,21 +186,14 @@ function generateTaskInCard(toDo) {
   }
   return listItems;
 };
-  
-function handleCard(e) {
-  deleteCard(e);
-  toggleUrgent(e);
-  updateCompletedButton(e);
-}
 
 function getToDoId(e) {   
  return e.target.closest('.task__card').getAttribute('data-id');
-  
 }
 
-function findToDoIndex(id) { //date.now of card
-  return toDoListArray.findIndex(function(arrayObj) { //not returning a value with debugger
-  return arrayObj.id == parseInt(id); //date.now of card
+function findToDoIndex(id) { 
+  return toDoListArray.findIndex(function(arrayObj) { 
+  return arrayObj.id == parseInt(id); 
 });
 }
 
@@ -236,26 +241,17 @@ function deleteCard(e) {
   if (e.target.classList.contains('delete-id')) {
     var toDoId = getToDoId(e);
     var toDoIndex = findToDoIndex(toDoId);
+    var allTaskCompleted = toDoListArray[toDoIndex].tasks;
+    var filteredTasks = allTaskCompleted.filter(task => task.completed === true);
+    if (filteredTasks.length === allTaskCompleted.length) {
     e.target.closest('article').remove();
     toDoListArray[toDoIndex].deleteFromStorage(toDoIndex);
-    enableDeleteBtn(e, toDoIndex)
   }
   makeTaskMessage();
+  }
 }
 
-function enableDeleteBtn(e, index) {
-  var objectToDelete = toDoListArray[index].tasks;
-  var newArray = objectToDelete.filter(function(arrayObj) {
-     return arrayObj.completed === true;
-  });
-  if (newArray.length === objectToDelete.length) {
-    e.target.closest('article').remove();
-    toDoListArray[toDoindex].deleteFromStorage(toDoIndex);
-  }
-  else {
-    return;
-  }
-};
+
 
 
 
