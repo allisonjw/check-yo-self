@@ -42,7 +42,6 @@ header form {
   border: none;
   border-radius: 3px 0 0 3px;
   height: 50px;
-  /* padding: 7px; */
   width: 50px;
 }
 
@@ -68,14 +67,13 @@ header img {
 }
 
 aside {
-  display: flex;
   background-color: #587A8A;
+  display: flex;
   flex-direction: column;
-  /* justify-content: center; */
-  width: 100%;
-  min-width: 250px;
-  width: 30%;
   height: auto;
+  min-width: 250px;
+  width: 100%;
+  width: 30%;
 }
 
 .aside__section--top {
@@ -117,9 +115,15 @@ aside input {
   width: 25px;
 }
 
+.aside__add--item {
+  align-items: center;
+  display: flex;
+  margin-bottom: 10px;
+}
+
 .aside__ul--task--item {
-  margin: 20px 0 0 0;
   width: 80%;
+  margin: 20px 0 0 0;
 }
 
 .task__form {

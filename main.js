@@ -17,7 +17,6 @@ var deleteImg = document.querySelector('delete__id');
 
 reinstantiateCards();
 reDisplayCards();
-// mapLocalStorage();
 
 
 addTaskItemBtn.addEventListener('click', createTask);
@@ -26,31 +25,18 @@ makeCardBtn.addEventListener('click', makeTasksArray);
 taskTitleInput.addEventListener('keyup', handleFormBtns);
 taskItemInput.addEventListener('keyup', handleFormBtns);
 clearAllBtn.addEventListener('click', clearFormInputs);
-// filterUrgBtn.addEventListener('click', urgencyFilter);
-// asideTaskForm.addEventListener('click', handleTaskForm);
-// asideTaskForm.addEventListener('click', handleFormBtns);
 main.addEventListener('click', handleCard);
-// function handleTaskForm(e) {
 
 function reinstantiateCards() {
   if (JSON.parse(localStorage.getItem('taskLists')) === null) {
-    return;
+   return;
   } else {
- var newArray = JSON.parse(localStorage.getItem('taskLists')).map(function(array) {
-    return new ToDoList(array.id, array.title, array.urgent, array.tasks);
-    });
-    toDoListArray = newArray;
-    // displayCard(newArray)
-  }
+  var newArray = JSON.parse(localStorage.getItem('taskLists')).map(function(array) {
+  return new ToDoList(array.id, array.title, array.urgent, array.tasks);
+  });
+   toDoListArray = newArray;
 }
-
-// function taskLocalStorage(oldToDo) {
-//   var newlistToDos = oldToDos.map(function(object) {
-//     return object = new ToDoList(object); 
-//   });
-//   oldToDos = listOfToDos; 
-//   reDisplayCards(oldToDos);
-// };
+}
 
 function reDisplayCards() {
   for (var i = 0; i < toDoListArray.length; i++) {
@@ -66,9 +52,9 @@ function makeTaskMessage() {
 
 function handleFormBtns(e) {
   e.preventDefault();
-  var taskItems = document.querySelectorAll('.aside__add--item');
-  makeCardBtn.disabled = !taskTitleInput.value || !taskItems.length; 
-  clearAllBtn.disabled = !taskTitleInput.value && !taskItemInput.value && !taskItems.length; 
+  var newTaskItems = document.querySelectorAll('.aside__add--item');
+  makeCardBtn.disabled = !taskTitleInput.value || !newTaskItems.length; 
+  clearAllBtn.disabled = !taskTitleInput.value && !taskItemInput.value && !newTaskItems.length; 
   taskItemInput.value === '' ? addTaskItemBtn.disabled = true: addTaskItemBtn.disabled = false;
   addTaskItemBtn.disabled = !taskItemInput.value;
 }
@@ -78,11 +64,12 @@ function clearFormInputs(e) {
   taskTitleInput.value = "";
   taskItemInput.value = "";
   newTaskItemArea.innerHTML = "";
-  handleFormBtns(e);
+  makeCardBtn.disabled = true;
+  clearAllBtn.disabled = true;
+  addTaskItemBtn.disabled = true;
 }
 
 function createTask() {
-  // var input = taskItemInput.value;
   var id = Date.now();
   var ul = document.querySelector('#section__ul--task');
   var possibleItem = `<li class="aside__add--item" data-id=${id}> 
@@ -95,7 +82,6 @@ function createTask() {
 } 
 
 function makeToDoList(e, taskItems) {
-  // var taskItems = makeTasksArray();
   var toDo = new ToDoList(Date.now(), taskTitleInput.value, false, taskItems);
   toDoListArray.push(toDo);
   toDo.saveToStorage(toDoListArray);
@@ -114,20 +100,10 @@ makeToDoList(e, taskItems);
 };
 
 function removeCreateTask(e) {
-  if(e.target.classList.contains('aside__delete-list-item')) {
+  if (e.target.classList.contains('aside__delete-list-item')) {
      e.target.closest("li").remove();
-     deleteTaskItem(e)
   }
 } 
-
-// function deleteTaskItem(e) {
-//   if (e.target.closest('.aside__delete-list-item')) {
-//     var taskId = getTaskLId(e)
-//     var taskIndex = findTaskIndex(taskId)
-//     taskItems.splice(taskIndex, 1)
-//     event.target.closest('li').remove();
-//   }
-// };
 
 function displayCard(toDo) {
   taskMessage.classList.add('hidden');
@@ -157,18 +133,17 @@ function displayCard(toDo) {
         </form>
       </footer>
     </article>`);
-    // makeTaskMessage();
 }
 
 function generateTaskInCard(toDo) {
   var addListArray = [];
   var listItems = '';
   for (var i = 0; i < toDo.tasks.length; i++) {
-    var checkbox = toDo.tasks[i].complete === true ? 'checkbox-active.svg' : 'checkbox.svg';
+    var checkbox = toDo.tasks[i].complete ? 'checkbox-active.svg' : 'checkbox.svg';
     var checkboxText = toDo.tasks[i].complete ? 'checkbox-text-active' : 'checkbox-text-inactive';
     addListArray.push(`
     <li class="aside__add--item" data-id=${[i]}> 
-      <img class=".article__image--checkbox" src="images/${checkbox} "${toDo.tasks[i].complete}>
+      <img class=".article__image--checkbox" src="images/${checkbox}">
       <p class="article__output--p ${checkboxText}" contenteditable="true">${toDo.tasks[i].task}</p>
     </li>`);
   }
@@ -177,23 +152,9 @@ function generateTaskInCard(toDo) {
   }
   return listItems;
 };
-
-
-// ********PHASE TWO*********
-// CHECKING TASK
-// 1.After a user has completed a task on their checklist, they should be able to check it off
-//  1.b checked task persist
-//  1.c updateTask method should save changes to storage
-//  1.d DOM update should happen in main.js
   
-// MAKE URGENT
-// 3. clicks on the Urgent button, the button should stay in the active state.
-//   3.a urgent cards should persist
-//   3.b updateToDo method should be used
-
 function handleCard(e) {
   deleteCard(e);
-  // checkAllCheckboxes(e);
   toggleUrgent(e);
   updateCompletedButton(e);
 }
@@ -202,19 +163,18 @@ function getTaskId(e) {
   return e.target.closest('li').getAttribute('data-id');
 }
 
-// inerpeter cant read 'taskId' == what else can i target?
 function findTaskIndex(id) {
   return taskItems.findIndex(function(arrayObj) {
   return arrayObj.id == parseInt(id);
   });
 }
 
-function getToDoId(e) {   //give date.now 
+function getToDoId(e) {   
  return e.target.closest('.task__card').getAttribute('data-id');
   
 }
 
-function findToDoIndex(id) {  //which index in the global array
+function findToDoIndex(id) {  
   return toDoListArray.findIndex(function(array) {
   return array.id == parseInt(id);
 });
@@ -226,12 +186,11 @@ function updateCompletedButton(e) {
     var toDoIndex = findToDoIndex(toDoId);
     var toDoObject = toDoListArray[toDoIndex];
     var taskId = getTaskId(e);
-    console.log(taskId)
     var taskIndex = findTaskIndex(taskId, toDoObject);
     toDoListArray[toDoIndex].updateTask(toDoListArray, taskIndex);
     var check = toDoObject.tasks[taskIndex] ? 'images/checkbox-active.svg' : 'images/checkbox.svg';
     e.target.setAttribute('src', check);
-    toggleCheckboxStyle(e);
+  toggleCheckboxStyle(e);
   }
 };  
 
@@ -243,11 +202,11 @@ function toggleCheckboxStyle(e) {
 
 function toggleUrgent(e) {
   if (e.target.classList.contains('urgent-id')) {
-  var toDoId = getToDoId(e);
-  var toDoIndex = findToDoIndex(toDoId);
-  toDoListArray[toDoIndex].updateToDo(toDoListArray, toDoIndex);
-  var urgent = toDoListArray[toDoIndex].urgent ? 'images/urgent-active.svg' : 'images/urgent.svg';
-  e.target.setAttribute('src', urgent);
+    var toDoId = getToDoId(e);
+    var toDoIndex = findToDoIndex(toDoId);
+    toDoListArray[toDoIndex].updateToDo(toDoListArray, toDoIndex);
+    var urgent = toDoListArray[toDoIndex].urgent ? 'images/urgent-active.svg' : 'images/urgent.svg';
+    e.target.setAttribute('src', urgent);
   toggleUrgentStyle(e, toDoIndex);
   }
 }
@@ -263,26 +222,13 @@ function toggleUrgentStyle(e) {
 
 function deleteCard(e) {
   if (e.target.classList.contains('delete-id')) {
-    // e.target.closest('article').remove();
     var toDoId = getToDoId(e);
     var toDoIndex = findToDoIndex(toDoId);
-// insert the function to remove the checkbox.svg if clicked
     e.target.closest('article').remove();
     toDoListArray[toDoIndex].deleteFromStorage(toDoIndex);
   }
   makeTaskMessage();
 }
-
-// function checkAllCheckboxes(e,) {
-//   var taskIndex = findTaskIndex(taskId, toDoObject);
-//   var checkedOff = toDoListArray[taskIndex].tasks.every(function(task) {
-//     return task.complete === true;
-//   }) 
-
-//   if (checkedOff === true) {
-//     deleteCard(e, taskIndex);
-//   }
-// };
 
 
 
