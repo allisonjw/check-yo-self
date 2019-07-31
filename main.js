@@ -143,7 +143,7 @@ function generateTaskInCard(toDo) {
     var checkboxText = toDo.tasks[i].complete ? 'checkbox-text-active' : 'checkbox-text-inactive';
     addListArray.push(`
     <li class="aside__add--item" data-id=${[i]}> 
-      <img class=".article__image--checkbox" src="images/${checkbox}">
+      <img class="article__image--checkbox" src="images/${checkbox}">
       <p class="article__output--p ${checkboxText}" contenteditable="true">${toDo.tasks[i].task}</p>
     </li>`);
   }
@@ -181,14 +181,14 @@ function findToDoIndex(id) {
 }
 
 function updateCompletedButton(e) {
-  if (e.target.closest('li img')) {
+  if (e.target.closest('.article__image--checkbox')) {
     var toDoId = getToDoId(e);
     var toDoIndex = findToDoIndex(toDoId);
     var toDoObject = toDoListArray[toDoIndex];
     var taskId = getTaskId(e);
     var taskIndex = findTaskIndex(taskId, toDoObject);
     toDoListArray[toDoIndex].updateTask(toDoListArray, taskIndex);
-    var check = toDoObject.tasks[taskIndex] ? 'images/checkbox-active.svg' : 'images/checkbox.svg';
+    var check = toDoObject.tasks[taskIndex].completed ? 'images/checkbox-active.svg' : 'images/checkbox.svg';
     e.target.setAttribute('src', check);
   toggleCheckboxStyle(e);
   }
@@ -229,6 +229,7 @@ function deleteCard(e) {
   }
   makeTaskMessage();
 }
+
 
 
 
